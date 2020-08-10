@@ -14,7 +14,7 @@ router.route('/testimonials/:id').get((req, res, next) => {
     result = db.testimonials[index];
   } else {
     result = db.testimonials.filter((element) => {
-      return element.id == id;
+      return element.id === id;
     });
   }
   res.json(result);
@@ -33,7 +33,7 @@ router.route('/testimonials').post((req, res, next) => {
 router.route('/testimonials/:id').put((req, res, next) => {
   const id = req.params.id;
   db.testimonials.map((element) => {
-    if (element.id == id) {
+    if (element.id === id) {
       element.author = req.body.author;
       element.text = req.body.text;
     }
@@ -44,7 +44,7 @@ router.route('/testimonials/:id').put((req, res, next) => {
 
 router.route('/testimonials/:id').delete((req, res, next) => {
   const id = req.params.id;
-  const testimonial = db.testimonials.filter((element) => element.id == id);
+  const testimonial = db.testimonials.filter((element) => element.id === id);
   const index = db.testimonials.indexOf(testimonial[0]);
   db.testimonials.splice(index, 1);
   res.json({message: 'OK'});

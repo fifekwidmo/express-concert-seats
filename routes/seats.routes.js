@@ -14,7 +14,7 @@ router.route('/seats/:id').get((req, res, next) => {
     result = db.seats[index];
   } else {
     result = db.seats.filter((element) => {
-      return element.id == id;
+      return element.id === id;
     });
   }
   res.json(result);
@@ -48,7 +48,7 @@ router.route('/seats/:id').put((req, res, next) => {
 
 router.route('/seats/:id').delete((req, res, next) => {
   const id = req.params.id;
-  const seat = db.seats.filter((element) => element.id == id);
+  const seat = db.seats.filter((element) => element.id === id);
   const index = db.seats.indexOf(seat[0]);
   db.seats.splice(index, 1);
   res.json({message: 'OK'});
