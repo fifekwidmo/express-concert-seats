@@ -9,17 +9,18 @@ const seatsRoutes = require('./routes/seats.routes');
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '/client/build')));
+
+
 //routes
 app.use('/api', testimonialsRoutes);
 app.use('/api', concertsRoutes);
 app.use('/api', seatsRoutes);
-
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/build/index.html'));
 });
-
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '/client/build')));
 
 app.use((req, res, next) => {
   res.status(404).json({ message: 'Not found...' });
