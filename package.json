@@ -9,7 +9,7 @@
     "start": "nodemon server",
     "build": "cd client && yarn install && yarn build"
   },
-  "name": "Zad4",
+  "name": "zad4",
   "version": "1.0.0",
   "license": "MIT"
 }
