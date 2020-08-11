@@ -21,21 +21,30 @@ router.route('/seats/:id').get((req, res, next) => {
 });
 
 router.route('/seats').post((req, res, next) => {
-  randomId = uuid.v4();
-  db.seats.push({
-    id: randomId,
-    day: req.body.day,
-    seat: req.body.seat,
-    client: req.body.client,
-    email: req.body.email,
+  let freeSeat = true;
+  db.seats.forEach(seat => {
+    if ((seat.day === req.body.day) && (seat.seat === req.body.seat)) {
+      freeSeat = false;
+      res.status(404).json({message: 'The slot is already taken...'});
+    }
   });
-  res.json({message: 'OK'});
+  if (freeSeat) {
+    randomId = uuid.v4();
+    db.seats.push({
+      id: randomId,
+      day: req.body.day,
+      seat: req.body.seat,
+      client: req.body.client,
+      email: req.body.email,
+    });
+    res.json({message: 'OK'})
+  }
 });
 
 router.route('/seats/:id').put((req, res, next) => {
   const id = req.params.id;
   db.seats.map((element) => {
-    if (element.id == id) {
+    if (element.id === id) {
       element.day = req.body.day;
       element.seat = req.body.seat;
       element.client = req.body.client;
