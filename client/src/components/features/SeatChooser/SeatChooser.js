@@ -1,44 +1,44 @@
 import React from 'react';
 import { Button, Progress, Alert } from 'reactstrap';
-
+import io from 'socket.io-client';
 import './SeatChooser.scss';
 
 class SeatChooser extends React.Component {
-  
+	state = {
+    allSeats: 50,
+  };
   componentDidMount() {
-    const { loadSeats } = this.props;
+    const { loadSeats, loadSeatsData } = this.props;
+		this.socket = io.connect(process.env.ENV_NODE || 'http://localhost:8000');
 		loadSeats();
-		this.intervalId = setInterval(() => loadSeats(), 1000 * 60 * 2); 
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.intervalId);
+	  this.socket.on('seatsUpdated', (seats) => { loadSeatsData(seats)});
 	}
-	
-
-  isTaken = (seatId) => {
+	isTaken = (seatId) => {
     const { seats, chosenDay } = this.props;
-
     return (seats.some(item => (item.seat === seatId && item.day === chosenDay)));
-  }
-
-  prepareSeat = (seatId) => {
+	}
+	prepareSeat = (seatId) => {
     const { chosenSeat, updateSeat } = this.props;
     const { isTaken } = this;
-
     if(seatId === chosenSeat) return <Button key={seatId} className="seats__seat" color="primary">{seatId}</Button>;
     else if(isTaken(seatId)) return <Button key={seatId} className="seats__seat" disabled color="secondary">{seatId}</Button>;
     else return <Button key={seatId} color="primary" className="seats__seat" outline onClick={(e) => updateSeat(e, seatId)}>{seatId}</Button>;
   }
-
+	getFreeSeats = () => {
+    const { seats, chosenDay } = this.props;
+    const { allSeats } = this.state;
+    const takenSeats = seats.filter(seat => {return seat.day === chosenDay});
+    let freeSeats = allSeats - takenSeats.length;
+    return freeSeats;
+  }
   render() {
-
+		const { allSeats } = this.state;
     const { prepareSeat } = this;
     const { requests } = this.props;
-
     return (
       <div>
         <h3>Pick a seat</h3>
+				{(requests['LOAD_SEATS'] && requests['LOAD_SEATS'].success) ? <p> Free seats: {`${this.getFreeSeats()}/${allSeats}`}</p> : ''}
         <small id="pickHelp" className="form-text text-muted ml-2"><Button color="secondary" /> – seat is already taken</small>
         <small id="pickHelpTwo" className="form-text text-muted ml-2 mb-4"><Button outline color="primary" /> – it's empty</small>
         { (requests['LOAD_SEATS'] && requests['LOAD_SEATS'].success) && <div className="seats">{[...Array(50)].map((x, i) => prepareSeat(i+1) )}</div>}

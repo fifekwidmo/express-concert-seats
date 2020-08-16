@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
-const uuid = require('uuid');
+const uuidv4 = require('uuid').v4;
 router.route('/seats').get((req, res, next) => {
   res.json(db.seats);
 });
@@ -20,24 +20,21 @@ router.route('/seats/:id').get((req, res, next) => {
   res.json(result);
 });
 
-router.route('/seats').post((req, res, next) => {
-  let freeSeat = true;
-  db.seats.forEach(seat => {
-    if ((seat.day === req.body.day) && (seat.seat === req.body.seat)) {
-      freeSeat = false;
-      res.status(404).json({message: 'The slot is already taken...'});
-    }
-  });
-  if (freeSeat) {
-    randomId = uuid.v4();
-    db.seats.push({
-      id: randomId,
-      day: req.body.day,
-      seat: req.body.seat,
-      client: req.body.client,
-      email: req.body.email,
-    });
-    res.json({message: 'OK'})
+router.route('/seats').post((req, res) => { 
+  const { day, seat, client, email } = req.body
+  const newSeat = {
+    id: uuidv4(),
+    day: day,
+    seat: seat,
+    client: client,
+    email: email, 
+  };
+  if (db.seats.some(item => (item.seat === newSeat.seat && item.day === newSeat.day))) {
+    res.json({message: 'The slot is already taken...'});
+  } else {
+    db.seats.push(newSeat);
+    req.io.emit('seatsUpdated', db.seats);
+    res.json({ message: 'OK' });
   }
 });
 
