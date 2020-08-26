@@ -1,4 +1,4 @@
-const Concert = require('../models/concerts.model');
+const Concert = require('../models/concert.model');
 const uuid = require('uuid');
 
 exports.getAll = async (req, res) => {
