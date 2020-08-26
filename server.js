@@ -6,6 +6,7 @@ const testimonialsRoutes = require('./routes/testimonials.routes');
 const concertsRoutes = require('./routes/concerts.routes');
 const seatsRoutes = require('./routes/seats.routes');
 const socket = require('socket.io');
+const mongoose = require('mongoose');
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -15,6 +16,13 @@ app.use((req, res, next) => {
   req.io = io;
   next();
 });
+
+mongoose.connect('mongodb://localhost:27017/companyDB', { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.once('open', () => {
+  console.log('Connected to the database');
+});
+db.on('error', err => console.log('Error ' + err));
 
 //routes
 app.use('/api', testimonialsRoutes);
