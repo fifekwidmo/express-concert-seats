@@ -7,6 +7,8 @@ const concertsRoutes = require('./routes/concerts.routes');
 const seatsRoutes = require('./routes/seats.routes');
 const socket = require('socket.io');
 const mongoose = require('mongoose');
+require('dotenv').config()
+
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -17,7 +19,11 @@ app.use((req, res, next) => {
   next();
 });
 
+console.log(process.env.MDBUser);
+console.log(process.env.MDBPassword);
+
 mongoose.connect(`mongodb+srv://${process.env.MDBUser}:${process.env.MDBPassword}@cluster0.pbvqf.mongodb.net/NewWaveDB?retryWrites=true&w=majority`, { useNewUrlParser: true,  useUnifiedTopology: true });
+
 
 const db = mongoose.connection;
 db.once('open', () => {
