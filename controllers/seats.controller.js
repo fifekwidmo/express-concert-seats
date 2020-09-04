@@ -1,5 +1,7 @@
 const Seat = require('../models/seats.model');
 const uuidv4 = require('uuid').v4;
+const sanitze = require('mongo-sanitize');
+
 
 exports.getAll = async (req, res) => {
   try {
@@ -26,14 +28,16 @@ exports.getId = async (req, res, next) => {
 exports.postOne = async (req, res) => {
   if (req.body.day && req.body.seat && req.body.client && req.body.email) {
     try {
+			const clean = sanitze(req.body);
+      const { day, seat, client, email } = clean;
       if (await Seat.findOne({ day: req.body.day, seat: req.body.seat })) {
         res.status(409).json({ message: 'The slot is already taken...' });
       } else {
         const newSeat = new Seat({
-          day: req.body.day,
-          seat: req.body.seat,
-          client: req.body.client,
-          email: req.body.email,
+					day: day,
+          seat: seat,
+          client: client,
+          email: email
         });
         await newSeat.save();
         const seatEvent = await Seat.find();

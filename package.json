@@ -3,8 +3,11 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "4.17.1",
+    "helmet": "^4.1.0",
+    "mongo-sanitize": "^1.1.0",
     "mongoose": "^5.10.0",
     "nodemon": "^2.0.4",
+    "snyk": "^1.388.0",
     "socket.io": "^2.3.0",
     "uuid": "^8.3.0"
   },
