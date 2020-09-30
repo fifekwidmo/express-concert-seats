@@ -9,8 +9,6 @@ const socket = require('socket.io');
 const mongoose = require('mongoose');
 require('dotenv').config()
 const helmet = require('helmet');
-
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
@@ -23,10 +21,7 @@ app.use((req, res, next) => {
 
 console.log(process.env.MDBUser);
 console.log(process.env.MDBPassword);
-
 mongoose.connect(`mongodb+srv://${process.env.MDBUser}:${process.env.MDBPassword}@cluster0.pbvqf.mongodb.net/NewWaveDB?retryWrites=true&w=majority`, { useNewUrlParser: true,  useUnifiedTopology: true });
-
-
 const db = mongoose.connection;
 db.once('open', () => {
   console.log('Connected to the database');
