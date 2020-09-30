@@ -1,6 +1,5 @@
 const Concert = require('../models/concert.model');
-const uuid = require('uuid');
-
+// 
 exports.getAll = async (req, res) => {
   try {
     const concertEvent = await Concert.find();
@@ -82,6 +81,58 @@ exports.deleteId = async (req, res) => {
       res.json({ message: 'OK' });
     } else {
       res.json({ message: 'Failed' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+};
+
+exports.getPerformer = async (req, res) => {
+  try {
+    respond = await Concert.find({performer : req.params.performer});
+    if (respond) {
+      res.json(respond);
+    } else {
+      res.json({ message: 'FAILED' });
+    }
+  } catch (err) {
+    res.status(500).json({ message : err });
+  }
+};
+
+exports.getGenre = async (req, res) => {
+  try {
+    const concertEvent = await Concert.find({genre : req.params.genre});
+    if (concertEvent) {
+      res.json(concertEvent);
+    } else {
+      res.json({ message: 'FAILED' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+};
+
+exports.getPrice = async (req, res) => {
+  try {
+		const concertEvent = await Concert.find({price : {$gte : req.params.price_min, $lte : req.params.price_max}});
+    if (concertEvent) {
+      res.json(concertEvent);
+    } else {
+      res.json({ message: 'FAILED' });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+};
+
+exports.getDay = async (req, res) => {
+  try {
+    const concertEvent = await Concert.find({day : req.params.day});
+    if (concertEvent) {
+      res.json(concertEvent);
+    } else {
+      res.json({ message: 'FAILED' });
     }
   } catch (err) {
     res.status(500).json({ message: err });
